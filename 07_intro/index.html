@@ -12,16 +12,82 @@
 <body>
 
 <div class="container-fluid">
-  <h3>Week 1: Introduction </h3> <br> 
+  <h3>Week 7: Output Devices</h3> <br> 
   <div class="row">
     
-      <p> Here is an image: </p>
 
-      <img src="./sew.png" class="img-responsive margin" style="width:20%" alt="Sew">
+      <img src="./week3.jpg" class="img-responsive margin" style="width:20%" alt="buzzer">
 
-      <p> And here is a	<a href='../index.html'>link</a>.
+      <h1>GOAL:</h1>
+      <p> This week, I was working on making my Piezo buzzer work. This buzzer is able to function as a speaker simply by taking tonal inputs from one's code and pulsing those frequencies for certain periods of time. </p>
 
-      </p>
+      <iframe src="https://giphy.com/embed/lRkQXKjzHIbRSnC5sh" width="270" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/lRkQXKjzHIbRSnC5sh">via GIPHY</a></p>
+
+      <h1>Note:</h1>
+      <p> Make sure you are connected to the exact Board on Arduino, I was using the Adafruit Metro Feather module when I actually only had the regular Adafruit Metro board. I spent a solid 5 hours scratching my head wondering why none of my code was compiling, but had an easy solution.</p>
+
+      <h1>Method:</h1>
+      <p> My main goal was to get the actual buzzer to function, using some of the example code in the Arduino software. I used the program: ToneMelody and was working on modifying this. I did so by first inserting the buzzer on the breadboard. This is a somewhat awkward buzzer to fit, simply because I did not have the tools to solder the positive and negative ends to the wires. Instead, I oriented the buzzer diagonally to allow oine open hole on both rows of the breadboard, and was able to fit a wire in. The positive end attaches to port 8, a digital port that is emitting pulses of frequencies for different periods of lengths. In order to code for a melody, you divide one second by the frequency, in order to get a quantity that allows for an even change of pitches. We also set times in between the pulses to allow time to differentiate the pitches.</p>
+
+      <h1>Code from Arduino</h1>
+      <p> /*
+  Melody
+
+  Plays a melody
+
+  circuit:
+  - 8 ohm speaker on digital pin 8
+
+  created 21 Jan 2010
+  modified 30 Aug 2011
+  by Tom Igoe
+
+  This example code is in the public domain.
+
+  http://www.arduino.cc/en/Tutorial/Tone
+*/
+
+#include "pitches.h"
+
+// notes in the melody:
+int melody[] = {
+  NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
+};
+
+// note durations: 4 = quarter note, 8 = eighth note, etc.:
+int noteDurations[] = {
+  4, 8, 8, 4, 4, 4, 4, 4
+};
+
+void setup() {
+  // iterate over the notes of the melody:
+  for (int thisNote = 0; thisNote < 8; thisNote++) {
+
+    // to calculate the note duration, take one second divided by the note type.
+    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+    int noteDuration = 1000 / noteDurations[thisNote];
+    tone(8, melody[thisNote], noteDuration);
+
+    // to distinguish the notes, set a minimum time between them.
+    // the note's duration + 30% seems to work well:
+    int pauseBetweenNotes = noteDuration * 1.30;
+    delay(pauseBetweenNotes);
+    // stop the tone playing:
+    noTone(8);
+  }
+}
+
+void loop() {
+  // no need to repeat the melody.
+}</p>
+
+      <img src="./side.jpg" class="img-responsive margin" style="width:20%" alt="side">
+
+
+
+<h1>Extension:</h1>
+      <p> While I messed around and got different pitches to work, I found some cool code on the Arduino website and was able to play the Super Mario theme song on it as well, which was super cool. This will be super helpful as I begin planning for my final project which may be creating a symphony of speakers! </p>
+
    
   </div>
 
