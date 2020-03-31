@@ -28,7 +28,9 @@
       <p> My main goal was to get the actual buzzer to function, using some of the example code in the Arduino software. I used the program: ToneMelody and was working on modifying this. I did so by first inserting the buzzer on the breadboard. This is a somewhat awkward buzzer to fit, simply because I did not have the tools to solder the positive and negative ends to the wires. Instead, I oriented the buzzer diagonally to allow oine open hole on both rows of the breadboard, and was able to fit a wire in. The positive end attaches to port 8, a digital port that is emitting pulses of frequencies for different periods of lengths. In order to code for a melody, you divide one second by the frequency, in order to get a quantity that allows for an even change of pitches. We also set times in between the pulses to allow time to differentiate the pitches.</p>
 
       <h1>Code from Arduino</h1>
+      <p> The code starts by importing a set of constants that are already in the pitches.h file. By doing so, we have a series of tones that the buzzer knows to play and we decide what durations we would like to play each for. Had I wanted to loop through the melody over and over again, I would have simply added this functionality in the void loop() part. 
       <p> /*
+
   Melody
 
   Plays a melody
@@ -79,7 +81,6 @@ void loop() {
   // no need to repeat the melody.
 }</p>
 
-      <img src="./side.jpg" class="img-responsive margin" style="width:20%" alt="side">
 
 
 
