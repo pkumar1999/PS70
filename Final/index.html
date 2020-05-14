@@ -11,17 +11,211 @@
 </head>
 <body>
 
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+}
+
+/* Create three equal columns that sits next to each other */
+.column {
+  flex: 33.33%;
+  padding: 5px;
+}
+</style>
+</head>
+
 <div class="container-fluid">
-  <h3>Final Project</h3> <br> 
+ <center> <h1>PS70 Final Project: Wifi-Enabled Speaker</h1></center>
+  <div>
+      <center><iframe width="966" height="543" src="https://www.youtube.com/embed/YLtCL-QH-BM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+      <center><h3>Goal:</h3></center>
+      <p>My final project's goal is to create a symphony of speakers, one that is able to play the the same input on multiple devices. The idea for this project came from the simple concept of most of the world having Bluetooth speakers that we can connect to individually: However, what's the point of having multiple speakers in one room, if everyone is playing a different song or not exactly synced? This is where the Sonos and JBL speakers function really well. The JBL Speakers (newer editions) are able to connect to each other over Bluetooth via the JBL App, while the Sonos models are all able to connect to each other via a shared wifi network. However, I thought with the Huzzah, this should be just as feasible to execute. </p>
+      <hr>
+      <center><h3> Step 1: Audio Output </h3></center>
+
+      <p> The first step of this entire project was buying multiple speaker drivers. First I thought I should look at how speakers usually work, so I took apart a cheap, unused bluetooth speaker I had sitting around my house. I was able to see the simple speaker driver connected to an input and ground, via a board. First, step was to recreate this same idea with a wired connection on my breadboard. Through Digikey, I purchased 2 8-Ohm 3W Speaker Drivers and soldered wires onto their positive and negative ends.</p>
+      <p> Next, the speakers themselves require an amplifier since the input from the board itself doesn't transmit powerful noise. Thus, I wired my speakers' positive and ground wires to using a 3W Amplifier Board acquired from the lab. These amps themselves allow for stereo speaker systems (L and R) to be created, but I decided to only use only R for both since I only had two speaker drivers and wanted to try and get both of them playing in different areas of my house. From this we also needed to solder four wires on the opposite side of the amp board: 2 Wires for power input and ground; The other two for sound input and sound ground. Now we have 6 wires exiting the amp, with 4 going to the breadboard and two going to the speaker.</p>
+      <p>Finally we started to work with these wires and plugged them into my Arduino Metro to make sure they both worked. Both the wire attached to the 5V - as well as the wire attached to the perpendicular symbol, are connected to ground. Next, the wire attached to the R (next to the perpendicular sign) goes to your input pin (in my case 11). Finally we want to attach the 5V + to the USB pin to give the speaker some power. We then plug our Metro into the laptop and should hear some weird static noises, suggesting that the speaker works. It is pretty easy to find some code online that plays MIDI files or tones via a speaker, (Even in Arduino examples there is Melody/Tone/etc). Nevertheless, we got our speaker to play the Pink Panther Theme Song via code that will be linked at the bottom. THE SPEAKERS WORK!</p>
 
 
-  <div class="row">
-    
-      <p> For my final project, I have several avenues I am interested in pursuing. One is a product idea I have had: A headphone plug that can be plugged into multiple speakers so that both (all) speakers play the same sound at the same time. I don't know the feasibility of this but I am interested in learning.</p>
+      <center><a href="https://drive.google.com/open?id=1ecn3wTh8kDeEuRa1qWB2TXqrLBIRbWeI">Link to Wired Pink Panther</a></center>
 
-      <p> Another possibility is learning more about how to engineer organs or cells using modified 3d Printers or other techniques taught in this class. </p>
-   
+      <div class="row">
+        <div class="column">
+          <img src="./Amp.jpg" alt="Amp" style="width:70%">
+        </div>
+        <div class="column">
+          <img src="./Amp2.jpg" alt="Amp2" style="width:70%">
+        </div>
+        <div class="column">
+          <img src="./Metro_Wiring.jpg" alt="Metro" style="width:70%">
+        </div>
+      </div>
+      <hr>
+      <center><h3> Step 2: Connect Huzzahs to WiFi </h3></center>
+
+      <p> First, I needed to go through the two new Huzzah's I purchased from the with the Blink Program to make sure they both worked. They were all able to connect to the Wifi and relay to Firebase changes (Take a look at my IoT Practice week). However, here is where the challenges arose. Based on a hackster.io tutorial by a dude named Julian, I learned it was possible to transmit music as RAW files to the HUZZAH; However, this required creation of a server. Looking through the code, most seemed similar to the blink in terms of connecting, BUT there was one difference in that we needed to have a host address. I tried literally every IP Address I can think of: my home IP, the Huzzah's IP, the reflective host IP, etc but to no avail: I kept recieving the error: Connection failed. I reached out to Nathan, and we struggled together.</p>
+      <hr>
+     <center> <img src="./Arduino1.jpg" alt="Arduino" style="width:100%"> </center>
+      <hr>
+      <center><h3> Step 3: Making a Server </h3></center>
+      <p> Nathan studied the <a href="https://www.hackster.io/julianfschroeter/stream-your-audio-on-the-esp32-2e4661#schematics">tutorial</a>  and told me that I needed to create a server via my computer, that could host my Huzzah, which would then spit out a "Host Address" I could connect to. First I tried using netcat to create a server on Terminal. (very easy first homebrew install netcat and then type in nc -l "port number"). This allowed me to create a server that theoretically my Huzzah could connect to, but I was unable to connect. To this Nathan suggested I create a Python server as listed <a href="https://wiki.python.org/moin/TcpCommunication">here</a> I managed to create a server via Python and run it on terminal, but again my Huzzah was unable to connect to it. I called on Nathan again </p>
+      <hr>
+      <center><h3> Step 4: I Was an Idiot</h3></center>
+      <p> 72 hours after struggling with creating a server, after investigating the tutorial even more, Nathan came across a key piece of information that I hadn't caught prior: Julian (the GOAT) gave us the code to run the server via Java and WE DIDN'T ACTUALLY NEED TO CREATE ONE OURSELVES. I'M SICK. I finally was able to get my Huzzah to connect to the server, with the host as my Home WIFI's IP Address.</p>
+      <hr>
+      <center><h3> Step 5: Converting MP3 to RAW File and Streaming. </h3></center>
+      <p> As I said before, the RAW file is able to be transmitted to the HUZZAH as opposed to sending the entire MP3. As stated by Wikipedia "A raw file is a collection of unprocessed data. This means the file has not been altered, compressed, or manipulated in any way by the computer." This allows the Huzzah to take on the job of processing this unprocessed data and sending it to the speaker itself. A note from Julian on how this idea works in a more technical aspect via a "circular buffer": I used a so-called "circular buffer", which is an array which end is connected to the beginning. Therefore the name "circular buffer". You can see a demonstration picture below or visit https://en.wikipedia.org/wiki/Circular_buffer for more information. The main loop checks if 800 bytes are free in the buffer. When this applies, the ESP32 sends a request to the server, consisting of 0xFF(11111111binary). The server responses the next 800 bytes and the ESP32 store them in the buffer. Back to me now, in short, the ESP32 is able to take in data in these small packets as long as there is space available. If so, the server sends another small packet. Note, all you really need to do is download the mp3s for multiple songs, convert them to RAW, and place them in the same folder and you've basically got yourself some version of an IPOD nano.</p>
+      <hr>
+      <center><h3> Step 6: Plug in and Listen Up </h3></center>
+      <p> Now we are onto the simple tasks of plugging and chugging. We need to match the pins pretty similarly to that of the Wired Metro connection we had earlier. However, no one wants to listen to an entire song on full blast every step of the day, so you should probably add a button or/and switch. Now, you are ready. On terminal, run java -jar "Voice_Server.jar" "YourFileName.raw" and RESET your Huzzah AFTER creating the server. I also attached a workout band and made it into a sort of satchel-speaker if you're trying to take the speaker on a bike ride or on the go!</p>
+
+        <div class="row">
+          <div class="column">
+            <img src="./portrait.jpg" alt="Portrait" style="width:70%">
+          </div>
+          <div class="column">
+            <img src="./model.jpg" alt="Model" style="width:70%">
+          </div>
+          <div class="column">
+            <img src="./machine.jpg" alt="Machine" style="width:70%">
+          </div>
+        </div>
+        <center><iframe width="966" height="543" src="https://www.youtube.com/embed/spGIxP4MnfU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+        <center><iframe width="966" height="543" src="https://www.youtube.com/embed/t4qnbAc4gyc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
+      <hr>
+      <center><h3> Obstacles and Future Directions to Conquer When We're Back on Campus </h3></center>
+      <p> Unfortunately, I did not get to accomplish my main goal of getting multiple speakers connected to the same Wi-Fi network. The challenge here lied in the code for the Java server, in that it only allowed for one client to connect to the server at a time. I tried tinkering with the Javascript file without any experience in Java coding, which unfortunately was to no avail. While this challenge is definitely one that could be fixed with a little more experience with coding, I will be forced to call this a future direction. Additionally, I think while the sleek cardboard design is great in terms of the right sizing for the breadboard and machinery, I could always make a 3D Printed Casing for the speaker and breadboard inside. Below is a sketch of how something like this would work! I still like my simple cardboard casing though (Low Cost). It might also be cool to add a headphone port so you can listen to the music on your headphones as long as you are at home! The audio has a little lag, but I am not sure if this is a fixable problem or lies in the very nature of the type of transmission occurring. </p>
+
+
+      <center><h1> Arduino Code from Julian on Hackster.io </h1></center>
+      <div class="language-plaintext highlighter-rouge">
+        <div class="highlight">
+          <pre class="highlight">
+            <code>
+          #include <Arduino.h>
+          #include <WiFi.h>
+          #include <driver/dac.h>
+
+const char* ssid     = "ATTjjqKxEa";
+const char* password = "mzx3eymjg#65";
+const char* host     = "192.168.1.104";
+
+WiFiClient client;
+
+hw_timer_t * timer = NULL;
+portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+
+#define BUFFFERMAX 8000
+
+uint8_t dataBuffer[BUFFFERMAX];
+int readPointer = 0, writePointer = 1;
+
+bool play = false;
+
+void IRAM_ATTR onTimer() {
+  portENTER_CRITICAL_ISR(&timerMux);
+
+  // play data:
+  if (play) {
+    dac_output_voltage(DAC_CHANNEL_1, dataBuffer[readPointer]);
+
+    readPointer++;
+    if (readPointer == BUFFFERMAX) {
+      readPointer = 0;
+    }
+
+    if ( getAbstand() == 0 ) {
+      Serial.println("Buffer underrun!!!");
+      play = false;
+    }
+  }
+
+
+  portEXIT_CRITICAL_ISR(&timerMux);
+}
+
+int getAbstand() {
+  int abstand = 0;
+  if (readPointer < writePointer ) abstand =  BUFFFERMAX - writePointer + readPointer;
+  else if (readPointer > writePointer ) abstand = readPointer - writePointer;
+  return abstand;
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  dac_output_enable(DAC_CHANNEL_1);
+  pinMode(33, INPUT_PULLUP);
+  pinMode(32, INPUT_PULLUP);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+
+  const int port = 4444;
+  while (!client.connect(host, port)) {
+    Serial.println("connection failed");
+    delay(1000);
+  }
+
+  timer = timerBegin(0, 2, true); // use a prescaler of 2
+  timerAttachInterrupt(timer, &onTimer, true);
+  timerAlarmWrite(timer, 5000, true);
+  timerAlarmEnable(timer);
+
+
+}
+
+void loop() {
+  int abstand = getAbstand();
+  if (abstand <= 800) play = true;
+
+  if ( abstand >= 800) {
+    client.write( B11111111 ); // send the command to send new data
+
+    // read new data:
+    while (client.available() == 0);
+    while (client.available() >= 1) {
+      uint8_t value = client.read();
+      dataBuffer[writePointer] = value;
+      writePointer++;
+      if (writePointer == BUFFFERMAX) writePointer = 0;
+    }
+
+  }
+
+}
+            </code>
+          </pre>
+        </div>
+      </div>
+
   </div>
+
+<h3>Downloadable Files and Helpful Links </h3>
+<a href="https://hacksterio.s3.amazonaws.com/uploads/attachments/444995/Voice_Server.jar">Server File</a>
+<hr>
+<a href="https://hacksterio.s3.amazonaws.com/uploads/attachments/444742/demo.raw"> Testable RAW File </a>
+<hr>
+<a href="https://www.hackster.io/julianfschroeter/stream-your-audio-on-the-esp32-2e4661"> Julian's Tutorial </a>
 
  
   
